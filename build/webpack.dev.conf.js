@@ -51,13 +51,35 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       poll: config.dev.poll,
     },
     before (app) {
-      app.get('/api/getApplyList', (req, res) => { // 新闻推荐
+      app.get('/api/getApplyList', (req, res) => {
         var page = req.query.page - 1,
             limit = req.query.limit
         res.json({
           code: 0,
           msg: 'success',
           data: getApplyList.slice(page*limit, (page+1)*limit)
+        })
+      })
+      app.get('/api/getApplyDetail', (req, res) => {
+        var id = req.query.id,
+            arr = {}
+        getApplyList.forEach(function(item){
+          if (Number(item.id) === Number(id)) {
+            arr = item
+          }
+        })
+        res.json({
+          code: 0,
+          msg: 'success',
+          data: arr
+        })
+      })
+      app.post('./api/postApplyInfo', (req, res)  => {
+        var id = req.query
+        console.log(id)
+        res.json({
+          code: 0,
+          msg: 'success'
         })
       })
     }

@@ -1,27 +1,67 @@
 <template>
   <div class="art-apply-detail">
-    <HeaderPub headerTitle="活动列表" back="/"></HeaderPub>
-    <div class="content">
+    <HeaderPub headerTitle="活动详情" back="/"></HeaderPub>
+    <div v-if="getApplyDetail" class="content">
       <div class="article_header">
-        <h1 class="title">杭州东方文化园旅业集团介绍</h1>
-        <div class="date">发布日期：2017-08-02 11:11:59</div>
+        <h1 class="title">{{getApplyDetail.title}}</h1>
+        <div class="date">发布日期：{{getApplyDetail.time}}</div>
       </div>
       <article class="article_detail">
+        {{getApplyDetail.content}}
       </article>
-      <div class="apply-btn">立即报名</div>
-      <applyForm></applyForm>
+      <div class="apply-btn" @click="controlForm">立即报名</div>
+      <transition name="slide">
+        <applyForm v-if="formShow" :artID="$route.params.id" @closeForm="controlForm"></applyForm>
+      </transition>
     </div>
   </div>
 </template>
 <script type="text/ecmascript-6">
 import HeaderPub from '@/components/header/header-pub/header-pub'
 import applyForm from '@/components/apply-form/apply-form'
+import { getApplyDetail } from '@/api/api.js'
+import { ERR_OK } from '@/api/config.js'
 export default {
   components: {
     HeaderPub,
     applyForm
   },
+  data () {
+    return {
+      getApplyDetail: {},
+      formShow: false
+    }
+  },
+  created () {
+    this.loading.open({
+      text: '加载中...',
+      spinnerType: 'triple-bounce'
+    })
+    this._getAllData()
+    console.log(this.$route.params)
+  },
   methods: {
+    _getAllData () {
+      let _this = this
+      let promise1 = new Promise((resolve, reject) => {
+        getApplyDetail(this.$route.params.id).then((res) => {
+          console.log(res.data)
+          if (res.code === ERR_OK) {
+            _this.getApplyDetail = res.data
+            resolve(res.data)
+          }
+        })
+      })
+      let promiseAll = Promise.all([promise1])
+      promiseAll.then(() => {
+        setTimeout(() => {
+          this.loading.close()
+        }, 400)
+      })
+    },
+    controlForm () {
+      this.formShow = !this.formShow
+    }
   }
 }
 </script>
@@ -32,6 +72,10 @@ export default {
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@/common/stylus/variable"
   @import "~@/common/stylus/mixin"
+  .slide-enter-active,.slide-leave-active
+    transition: all 0.3s
+  .slide-enter,.slide-leave-to
+    opacity: 0
   .art-apply-detail
     .content
       padding-bottom: 40px

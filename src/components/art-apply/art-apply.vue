@@ -1,60 +1,20 @@
 <template>
   <div class="art-apply">
     <HeaderPub headerTitle="活动列表"></HeaderPub>
-    <div class="list">
+    <div class="list" v-infinite-scroll="loadMore"
+                      infinite-scroll-disabled="hasMore"
+                      infinite-scroll-distance="8">
       <ul>
-        <li>
-          <a @click="addUrl('detail', 1)">
-            <img src="http://www.bocweb.cn/upload/2017/02/07/14864634460214eg62u.jpg">
+        <li v-for="(item, index) in getApplyList" :key="index">
+          <a @click="addUrl('detail', item.id)">
+            <img v-if="item.image" src="item.image">
             <div class="cont-box">
-              <p class="stit">标题测试标题测试标题测试标题测试标题测试标题测试标题测试标题测试标题测试标题测试标题测试</p>
+              <p class="stit">{{item.title}}</p>
               <div class="lab-font">
-                简介介绍去去去去去去群去去去去去去群无
+                {{item.create_time}}
               </div>
-              <div class="bot-link">
-                <span class="link-detail">Details</span>
-                <span class="point"></span>
-              </div>
-            </div>
-          </a>
-        </li>
-        <li>
-          <a>
-            <img src="http://www.bocweb.cn/upload/2017/02/07/14864634460214eg62u.jpg">
-            <div class="cont-box">
-              <p class="stit">标题测试标题测试标题测试标题测试标题测试标题测试标题测试标题测试标题测试标题测试标题测试</p>
               <div class="lab-font">
-                简介介绍去去去去去去群去去去去去去群无
-              </div>
-              <div class="bot-link">
-                <span class="link-detail">Details</span>
-                <span class="point"></span>
-              </div>
-            </div>
-          </a>
-        </li>
-        <li>
-          <a>
-            <img src="http://www.bocweb.cn/upload/2017/02/07/14864634460214eg62u.jpg">
-            <div class="cont-box">
-              <p class="stit">标题测试标题测试标题测试标题测试标题测试标题测试标题测试标题测试标题测试标题测试标题测试</p>
-              <div class="lab-font">
-                简介介绍去去去去去去群去去去去去去群无
-              </div>
-              <div class="bot-link">
-                <span class="link-detail">Details</span>
-                <span class="point"></span>
-              </div>
-            </div>
-          </a>
-        </li>
-        <li>
-          <a>
-            <img src="http://www.bocweb.cn/upload/2017/02/07/14864634460214eg62u.jpg">
-            <div class="cont-box">
-              <p class="stit">标题测试标题测试标题测试标题测试标题测试标题测试标题测试标题测试标题测试标题测试标题测试</p>
-              <div class="lab-font">
-                简介介绍去去去去去去群去去去去去去群无
+                {{item.description}}
               </div>
               <div class="bot-link">
                 <span class="link-detail">Details</span>
@@ -77,8 +37,17 @@ export default {
   },
   data () {
     return {
-      ticket: []
+      getApplyList: [],
+      page: 1, // 底部上拉加载页数
+      hasMore: true // 是否还需要上拉加载
     }
+  },
+  created () {
+    this.loading.open({
+      text: '加载中...',
+      spinnerType: 'triple-bounce'
+    })
+    this._getAllData()
   },
   methods: {
     addUrl (urlText, itemId) {
@@ -87,19 +56,44 @@ export default {
     _getAllData () {
       let _this = this
       let promise1 = new Promise((resolve, reject) => {
-        getApplyList().then((res) => {
+        getApplyList(this.page).then((res) => {
           if (res.code === ERR_OK) {
-            _this.ticketClass = res.data
+            _this.getApplyList = res.data
             resolve(res.data)
-          } else {
-            resolve(res)
+            this.hasMore = false
+            this.page++
           }
         })
       })
       let promiseAll = Promise.all([promise1])
       promiseAll.then(() => {
         setTimeout(() => {
-        }, 20)
+          this.loading.close()
+        }, 400)
+      })
+    },
+    loadMore () { // 数据上拉加载
+      this.loading.open({
+        text: '加载中...',
+        spinnerType: 'triple-bounce'
+      })
+      this.hasMore = true
+      getApplyList(this.page).then((res) => {
+        if (res.code === ERR_OK) {
+          setTimeout(() => {
+            this.getApplyList = this.getApplyList.concat(res.data)
+            if (res.data.length === 0) {
+              this.loading.close()
+              this.$toast('没有更多了')
+            } else {
+              setTimeout(() => { // 不加会自动检查再次调用
+                this.hasMore = false
+                this.loading.close()
+              }, 300)
+              this.page++
+            }
+          }, 500)
+        }
       })
     }
   }

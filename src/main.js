@@ -6,7 +6,7 @@ import router from './router'
 import axios from 'axios'
 import fastclick from 'fastclick'
 import '@/common/stylus/index.styl'
-import { Indicator, InfiniteScroll, Lazyload, MessageBox } from 'mint-ui'
+import { Indicator, InfiniteScroll, Lazyload, MessageBox, Toast } from 'mint-ui'
 import 'mint-ui/lib/style.css'
 Vue.config.productionTip = false
 // 引入http库
@@ -21,6 +21,7 @@ Vue.use(InfiniteScroll)
 Vue.use(Lazyload)
 Vue.prototype.loading = Indicator
 Vue.prototype.$msg = MessageBox
+Vue.prototype.$toast = Toast
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
