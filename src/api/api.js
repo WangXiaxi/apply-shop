@@ -1,5 +1,6 @@
 import axios from 'axios'
 import {URL} from './config'
+import qs from 'qs'
 
 /** 获取文章列表 **/
 export function getApplyList (page) {
@@ -30,7 +31,6 @@ export function getApplyDetail (id) {
 
 /** 表单提交 **/
 export function postApplyInfo (name, phone, artID) {
-  console.log(name, phone, artID)
   const url = URL + '/api/postApplyInfo'
   const data = Object.assign({}, {
     name: name,
@@ -38,7 +38,10 @@ export function postApplyInfo (name, phone, artID) {
     artID: artID
   })
   return axios.post(url, {
-    params: data
+    params: qs.stringify(data)
+  },
+  {
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
   }).then((res) => {
     return Promise.resolve(res.data)
   })
