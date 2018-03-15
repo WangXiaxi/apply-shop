@@ -10,6 +10,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
 
+const express = require('express')
+const app = express()
+var appData = require('../data.json') //加载本地数据文件
+var getApplyList = appData.getApplyList //获取对应的本地数据
+var apiRoutes = express.Router()
+app.use('/api', apiRoutes)
+
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
 
@@ -42,6 +49,17 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     quiet: true, // necessary for FriendlyErrorsPlugin
     watchOptions: {
       poll: config.dev.poll,
+    },
+    before (app) {
+      app.get('/api/getApplyList', (req, res) => { // 新闻推荐
+        var page = req.query.page - 1,
+            limit = req.query.limit
+        res.json({
+          code: 0,
+          msg: 'success',
+          data: getApplyList.slice(page*limit, (page+1)*limit)
+        })
+      })
     }
   },
   plugins: [

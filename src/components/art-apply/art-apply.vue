@@ -4,7 +4,7 @@
     <div class="list">
       <ul>
         <li>
-          <a>
+          <a @click="addUrl('detail', 1)">
             <img src="http://www.bocweb.cn/upload/2017/02/07/14864634460214eg62u.jpg">
             <div class="cont-box">
               <p class="stit">标题测试标题测试标题测试标题测试标题测试标题测试标题测试标题测试标题测试标题测试标题测试</p>
@@ -69,11 +69,39 @@
 </template>
 <script type="text/ecmascript-6">
 import HeaderPub from '@/components/header/header-pub/header-pub'
+import { getApplyList } from '@/api/api.js'
+import { ERR_OK } from '@/api/config.js'
 export default {
   components: {
     HeaderPub
   },
+  data () {
+    return {
+      ticket: []
+    }
+  },
   methods: {
+    addUrl (urlText, itemId) {
+      this.$router.push(`/${urlText}/${itemId}`)
+    },
+    _getAllData () {
+      let _this = this
+      let promise1 = new Promise((resolve, reject) => {
+        getApplyList().then((res) => {
+          if (res.code === ERR_OK) {
+            _this.ticketClass = res.data
+            resolve(res.data)
+          } else {
+            resolve(res)
+          }
+        })
+      })
+      let promiseAll = Promise.all([promise1])
+      promiseAll.then(() => {
+        setTimeout(() => {
+        }, 20)
+      })
+    }
   }
 }
 </script>
@@ -87,16 +115,13 @@ export default {
         width: 100%
         background: #fff
         margin-bottom: 20px
+        border: 1px solid #f2f2f2
         img
           width: 100%
           display: block
-          border:  1px solid #f2f2f2
-          border-bottom: none
         .cont-box
           padding: 12px 6.5% 0
           padding-bottom: 7px
-          border: 1px solid #f2f2f2
-          border-top: none
           .stit
             line-height: 28px
             margin-bottom: 8px

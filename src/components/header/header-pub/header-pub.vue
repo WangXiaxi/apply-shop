@@ -34,6 +34,7 @@ export default {
       if (this.back === 'no') {
         this.$router.go(-1)
       } else {
+        console.log(this.back)
         this.$router.push(this.back)
       }
     },
