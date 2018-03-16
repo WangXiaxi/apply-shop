@@ -1,13 +1,12 @@
 <template>
   <div class="art-apply-detail">
-    <HeaderPub headerTitle="活动详情" back="/"></HeaderPub>
+    <HeaderPub headerTitle="活动详情" clickInfo="商城" @clickEvent='clickEvent' :showKeepInfo=true back="/"></HeaderPub>
     <div v-if="getApplyDetail" class="content">
       <div class="article_header">
         <h1 class="title">{{getApplyDetail.title}}</h1>
-        <div class="date">发布日期：{{getApplyDetail.time}}</div>
+        <div class="date">发布日期：{{getApplyDetail.create_time}}</div>
       </div>
-      <article class="article_detail">
-        {{getApplyDetail.content}}
+      <article class="article_detail" v-html="getApplyDetail.content">
       </article>
       <div class="apply-btn" @click="controlForm">立即报名</div>
       <transition name="slide">
@@ -26,10 +25,14 @@ export default {
     HeaderPub,
     applyForm
   },
+  computed: {
+    formShow () {
+      return this.$store.state.formShow
+    }
+  },
   data () {
     return {
-      getApplyDetail: {},
-      formShow: false
+      getApplyDetail: {}
     }
   },
   created () {
@@ -38,7 +41,6 @@ export default {
       spinnerType: 'triple-bounce'
     })
     this._getAllData()
-    console.log(this.$route.params)
   },
   methods: {
     _getAllData () {
@@ -60,14 +62,17 @@ export default {
       })
     },
     controlForm () {
-      this.formShow = !this.formShow
+      this.$store.commit('SET_FORMSHOW', !this.$store.state.formShow)
+    },
+    clickEvent () {
+      window.location.href = 'https://www.ehanone.com/'
     }
   }
 }
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
   html,body
-    background: #fff
+    background: #fff !important
 </style>
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@/common/stylus/variable"

@@ -38,6 +38,19 @@ export default {
       this.$emit('closeForm')
     },
     submitForm () {
+      if (!this.name) {
+        this.$toast({
+          message: '姓名不能为空'
+        })
+        return false
+      }
+      let phoneReg = /(^1[3|4|5|7|8]\d{9}$)|(^09\d{8}$)/
+      if (!phoneReg.test(this.phone)) {
+        this.$toast({
+          message: '手机号码格式不正确'
+        })
+        return false
+      }
       this.loading.open({
         text: '正在提交...',
         spinnerType: 'triple-bounce'
@@ -45,29 +58,21 @@ export default {
       postApplyInfo(this.name, this.phone, this.artID).then((res) => {
         if (res.code === ERR_OK) {
           setTimeout(() => {
+            this.$store.commit('SET_FORMSHOW', !this.$store.state.formShow)
             this.loading.close()
-            this.toast({
-              message: '操作成功',
-              iconClass: 'icon icon-success'
+            this.$toast({
+              message: '操作成功'
             })
           }, 300)
         } else {
           setTimeout(() => {
             this.loading.close()
-            this.toast({
+            this.$toast({
               message: res.msg
             })
           }, 300)
         }
       })
-    }
-  },
-  watch: {
-    name (N) {
-      console.log(N)
-    },
-    phone (N) {
-      console.log(N)
     }
   }
 }
@@ -77,7 +82,7 @@ export default {
   @import "~@/common/stylus/mixin"
   .apply-form
     position: fixed
-    z-index: 1001
+    z-index: 11
     top: 0
     left: 0
     bottom: 0

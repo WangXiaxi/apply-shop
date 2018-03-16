@@ -56,7 +56,7 @@ export default {
       width: 100%
       max-width: 640px
       top: 0
-      z-index: 1000;
+      z-index: 10;
       &:before
         line-scale()
         bottom: 0
@@ -79,4 +79,14 @@ export default {
         letter-spacing: 1px
         font-weight: 400
         color: $color-highlight-background
+      .keep-info
+        position: absolute
+        right: 10px
+        top: 6px
+        z-index: 100
+        line-height: 30px
+        padding: 0 5px
+        font-size: $font-size-medium
+        background: #f0f0f0
+        border-radius: 5px
 </style>

@@ -8,6 +8,7 @@ import fastclick from 'fastclick'
 import '@/common/stylus/index.styl'
 import { Indicator, InfiniteScroll, Lazyload, MessageBox, Toast } from 'mint-ui'
 import 'mint-ui/lib/style.css'
+import store from './store'
 Vue.config.productionTip = false
 // 引入http库
 Vue.prototype.$axios = axios
@@ -26,6 +27,7 @@ Vue.prototype.$toast = Toast
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

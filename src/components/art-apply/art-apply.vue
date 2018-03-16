@@ -1,6 +1,6 @@
 <template>
   <div class="art-apply">
-    <HeaderPub headerTitle="活动列表"></HeaderPub>
+    <HeaderPub headerTitle="活动列表" clickInfo="商城" @clickEvent='clickEvent' :showKeepInfo=true></HeaderPub>
     <div class="list" v-infinite-scroll="loadMore"
                       infinite-scroll-disabled="hasMore"
                       infinite-scroll-distance="8">
@@ -84,7 +84,7 @@ export default {
             this.getApplyList = this.getApplyList.concat(res.data)
             if (res.data.length === 0) {
               this.loading.close()
-              this.$toast('没有更多了')
+              this.instance = this.$toast('没有更多了')
             } else {
               setTimeout(() => { // 不加会自动检查再次调用
                 this.hasMore = false
@@ -95,6 +95,14 @@ export default {
           }, 500)
         }
       })
+    },
+    clickEvent () {
+      window.location.href = 'https://www.ehanone.com/'
+    }
+  },
+  beforeDestroy () {
+    if (this.instance) {
+      this.instance.close()
     }
   }
 }
