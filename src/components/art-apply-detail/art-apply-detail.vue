@@ -1,6 +1,6 @@
 <template>
   <div class="art-apply-detail">
-    <HeaderPub headerTitle="活动详情" clickInfo="商城" @clickEvent='clickEvent' :showKeepInfo=true back="/"></HeaderPub>
+    <HeaderPub headerTitle="活动详情" clickInfo="商城" @clickEvent='clickEvent' :showKeepInfo=true back="/site/register_list"></HeaderPub>
     <div v-if="getApplyDetail" class="content">
       <div class="article_header">
         <h1 class="title">{{getApplyDetail.title}}</h1>
@@ -47,7 +47,6 @@ export default {
       let _this = this
       let promise1 = new Promise((resolve, reject) => {
         getApplyDetail(this.$route.params.id).then((res) => {
-          console.log(res.data)
           if (res.code === ERR_OK) {
             _this.getApplyDetail = res.data
             resolve(res.data)
@@ -73,6 +72,14 @@ export default {
 <style lang="stylus" rel="stylesheet/stylus">
   html,body
     background: #fff !important
+    .article_detail
+      img
+          display: block
+          max-width: 100%
+          height: auto
+          margin: 0 auto
+        p
+          margin: 3px 0
 </style>
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~@/common/stylus/variable"

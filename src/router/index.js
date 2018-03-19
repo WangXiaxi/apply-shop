@@ -6,14 +6,15 @@ import artApplyDetail from '@/components/art-apply-detail/art-apply-detail'
 Vue.use(Router)
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
-      path: '/',
+      path: '/site/register_list',
       name: 'artApply',
       component: artApply
     },
     {
-      path: '/detail/:id',
+      path: '/site/register_list/detail/:id',
       name: 'artApplyDetail',
       component: artApplyDetail
     }

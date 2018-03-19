@@ -6,8 +6,8 @@
                       infinite-scroll-distance="8">
       <ul>
         <li v-for="(item, index) in getApplyList" :key="index">
-          <a @click="addUrl('detail', item.id)">
-            <img v-if="item.image" src="item.image">
+          <a @click="addUrl('site/register_list/detail', item.id)">
+            <img v-if="item.image" :src="item.image">
             <div class="cont-box">
               <p class="stit">{{item.title}}</p>
               <div class="lab-font">
