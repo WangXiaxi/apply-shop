@@ -32,7 +32,7 @@ export default {
   methods: {
     goBack () {
       if (this.back === 'no') {
-        window.location.href = 'https://www.ehanone.com/'
+        this.$router.go(-1)
       } else {
         this.$router.push(this.back)
       }

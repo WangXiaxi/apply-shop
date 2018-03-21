@@ -6,7 +6,7 @@ import router from './router'
 import axios from 'axios'
 import fastclick from 'fastclick'
 import '@/common/stylus/index.styl'
-import { Indicator, InfiniteScroll, Lazyload, MessageBox, Toast } from 'mint-ui'
+import { Indicator, InfiniteScroll, Lazyload, MessageBox, Toast, Swipe, SwipeItem, Radio, Picker } from 'mint-ui'
 import 'mint-ui/lib/style.css'
 import store from './store'
 Vue.config.productionTip = false
@@ -20,9 +20,23 @@ Vue.config.productionTip = false
 
 Vue.use(InfiniteScroll)
 Vue.use(Lazyload)
+Vue.component(Swipe.name, Swipe)
+Vue.component(SwipeItem.name, SwipeItem)
+Vue.component(Radio.name, Radio)
+Vue.component(Picker.name, Picker)
 Vue.prototype.loading = Indicator
 Vue.prototype.$msg = MessageBox
 Vue.prototype.$toast = Toast
+
+// 路由拦截器,控制tabBar的显示隐藏
+router.beforeEach((to, from, next) => {
+  let path = to.path
+  if (path.indexOf('/site/register_list/detail/') === -1) {
+    document.title = '大集·e兑商城'
+  }
+  next()
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

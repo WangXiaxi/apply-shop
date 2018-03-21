@@ -30,15 +30,43 @@ export function getApplyDetail (id) {
 }
 
 /** 表单提交 **/
-export function postApplyInfo (name, phone, artID) {
+export function postApplyInfo (name, phone, artID, province, vipTipe, sfzID) {
   const url = URL + '/site/registrations_act'
   const data = Object.assign({}, {
     name: name,
     phone: phone,
-    artID: artID
+    artID: artID,
+    id_card: sfzID,
+    province: province,
+    vip_type: vipTipe
   })
   return axios.post(url, qs.stringify(data), {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+  }).then((res) => {
+    return Promise.resolve(res.data)
+  })
+}
+
+/** 报名人数 **/
+export function registrationsSum (artID) {
+  const url = URL + '/site/registrations_sum'
+  const data = Object.assign({}, {
+    id: artID
+  })
+  return axios.get(url, {
+    params: data
+  }).then((res) => {
+    return Promise.resolve(res.data)
+  })
+}
+
+/** 地区查询 **/
+export function getProvince () {
+  const url = URL + '/site/getProvince'
+  const data = Object.assign({}, {
+  })
+  return axios.get(url, {
+    params: data
   }).then((res) => {
     return Promise.resolve(res.data)
   })

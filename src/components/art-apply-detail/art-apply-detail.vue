@@ -1,6 +1,16 @@
 <template>
   <div class="art-apply-detail">
-    <HeaderPub headerTitle="活动详情" clickInfo="商城" @clickEvent='clickEvent' :showKeepInfo=true back="/site/register_list"></HeaderPub>
+    <div ref="imgBox">
+      <mt-swipe :auto="4000">
+        <mt-swipe-item><img src="@/common/image/banner2.jpg" width="100%" ref="imgSet"></mt-swipe-item>
+        <mt-swipe-item><img src="@/common/image/banner1.jpg" width="100%"></mt-swipe-item>
+      </mt-swipe>
+    </div>
+    <div class="nav">
+      <a href="https://www.ehanone.com">e兑商城</a>
+      <router-link tag="a" to="/site/register_list">活动列表</router-link>
+      <a href="javascript:location.reload()">刷新</a>
+    </div>
     <div v-if="getApplyDetail" class="content">
       <div class="article_header">
         <h1 class="title">{{getApplyDetail.title}}</h1>
@@ -9,6 +19,13 @@
       <article class="article_detail" v-html="getApplyDetail.content">
       </article>
       <div class="apply-btn" @click="controlForm">立即报名</div>
+      <div class="sign-info">
+        <ul>
+          <li>总报名人数<span>{{allPeoNum}}人</span></li>
+          <li>特邀嘉宾<span>{{vipPeoNum}}人</span></li>
+          <li>报名嘉宾<span>{{stuPeoNum}}人</span></li>
+        </ul>
+      </div>
       <transition name="slide">
         <applyForm v-if="formShow" :artID="$route.params.id" @closeForm="controlForm"></applyForm>
       </transition>
@@ -16,13 +33,12 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-import HeaderPub from '@/components/header/header-pub/header-pub'
+
 import applyForm from '@/components/apply-form/apply-form'
-import { getApplyDetail } from '@/api/api.js'
+import { getApplyDetail, registrationsSum } from '@/api/api.js'
 import { ERR_OK } from '@/api/config.js'
 export default {
   components: {
-    HeaderPub,
     applyForm
   },
   computed: {
@@ -32,7 +48,10 @@ export default {
   },
   data () {
     return {
-      getApplyDetail: {}
+      getApplyDetail: {},
+      allPeoNum: 0,
+      vipPeoNum: 0,
+      stuPeoNum: 0
     }
   },
   created () {
@@ -42,6 +61,11 @@ export default {
     })
     this._getAllData()
   },
+  mounted () {
+    this.$refs.imgSet.onload = () => {
+      this.$refs.imgBox.style.height = `${this.$refs.imgSet.height}px`
+    }
+  },
   methods: {
     _getAllData () {
       let _this = this
@@ -49,11 +73,22 @@ export default {
         getApplyDetail(this.$route.params.id).then((res) => {
           if (res.code === ERR_OK) {
             _this.getApplyDetail = res.data
+            document.title = _this.getApplyDetail.title
             resolve(res.data)
           }
         })
       })
-      let promiseAll = Promise.all([promise1])
+      let promise2 = new Promise((resolve, reject) => {
+        registrationsSum(this.$route.params.id).then((res) => {
+          if (res.code === ERR_OK) {
+            this.allPeoNum = Number(res.data.guest) + Number(res.data.member)
+            this.vipPeoNum = res.data.guest
+            this.stuPeoNum = res.data.member
+            resolve(res.data)
+          }
+        })
+      })
+      let promiseAll = Promise.all([promise1, promise2])
       promiseAll.then(() => {
         setTimeout(() => {
           this.loading.close()
@@ -89,6 +124,27 @@ export default {
   .slide-enter,.slide-leave-to
     opacity: 0
   .art-apply-detail
+    .nav
+      display: flex
+      height: 40px
+      line-height: 40px
+      background: #5C5C5C
+      a
+        flex: 1
+        text-align: center
+        color: #fff
+        position: relative
+        &:after
+          content: ''
+          height: 20px
+          width: 1px
+          transform: scaleX(0.5)
+          background: rgba(255, 255, 255, .75)
+          position: absolute
+          top: 10px
+          left: 0
+        &:first-child:after
+          display: none
     .content
       padding-bottom: 40px
       .article_header
@@ -126,4 +182,27 @@ export default {
       font-size: $font-size-medium-x1
       color: #fff
       border-radius: 5px
+    .sign-info
+      width: 100%
+      position: relative
+      margin-top: 20px
+      &:before
+        line-scale()
+        width: calc(100% - 24px)
+        left: 12px
+        bottom: auto
+        top: 0
+      ul
+        margin 0 12px
+        li
+          line-height: 50px
+          height: 50px
+          position: relative
+          padding: 0 10px
+          &:before
+            line-scale()
+            bottom: 0
+            top: auto
+          span
+            float: right
 </style>

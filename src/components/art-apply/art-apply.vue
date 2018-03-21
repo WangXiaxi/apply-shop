@@ -120,6 +120,7 @@ export default {
         border: 1px solid #f2f2f2
         img
           width: 100%
+          height: 30%
           display: block
         .cont-box
           padding: 12px 6.5% 0
@@ -139,8 +140,8 @@ export default {
             overflow: hidden
             text-overflow: ellipsis
             display: -webkit-box
-            -webkit-line-clamp: 3
-            -webkit-box-orient: vertical
+            box-orient: vertical
+            line-clamp: 3
           .bot-link
             line-height: 36px
             display: block
